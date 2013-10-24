@@ -17,39 +17,19 @@
         $scope.libraries = libraries;
     });
 
+    app.controller('account', function ($scope, fbRoot, angularFireAuth) {
+        angularFireAuth.initialize(fbRoot, {scope: $scope, name: "user"});
+        $scope.loginGithub = function () {
+            angularFireAuth.login('github');
+        };
+        $scope.logout = function () {
+            angularFireAuth.logout();
+        };
+    });
+
     app.config( function ($routeProvider) {
         $routeProvider
             .when("/libraries", { controller: 'libraryList', templateUrl: 'libraryList.html'})
             .otherwise({ redirectTo: "/libraries"});
     });
 })();
-
-
-var mdr = new Firebase("https://minervajs.firebaseio.com");
-var auth = new FirebaseSimpleLogin(mdr, function (error, user) {
-    window.usr = user;
-    console.log(arguments);
-});
-
-$('#messageInput').keypress( function(e) {
-    if (e.keyCode == 13) {
-        var name = $('#nameInput').val();
-        var message = $('#messageInput').val();
-        mdr.push({name: name, message: message});
-        $('#messageInput').val('');
-    }
-});
-
-mdr.on('child_added', function (snapshot) {
-    var message = snapshot.val();
-    displayChatMessage(message.name, message.message);
-});
-
-function displayChatMessage (name, text) {
-    $('<div/>').text(text).prepend($('<em/>').text(name + ": ")).appendTo("#messages");
-    $('#messages')[0].scrollTop = $('#messages')[0].scrollHeight;
-}
-
-$('#login').click( function (e) {
-    auth.login('github');
-});

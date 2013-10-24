@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="minerva">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
     <title>MinervaJS</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
+<body><div class="container">
+
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">MinervaJS</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#/libraries">Libraries</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right" ng-controller="account">
+                <li class="dropdown" ng-hide="user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" ng-click="loginGithub()">Github</a></li>
+                    </ul>
+                </li>
+                <li ng-show="user"><a href="#" ng-click="logout()">Logout {{user.name}}.</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <!-- Main Content -->
     <div id="messages"></div>
 
     <input type='text' id='nameInput' placeholder='Name'>
@@ -13,7 +52,7 @@
 
     <button id="login" class="btn">Login!</button>
 
-    <div ng-view></div>
+    <div class="row" ng-view></div>
 
     <!-- Templates -->
     <script id="libraryList.html" type="text/ng-template">
@@ -21,6 +60,11 @@
             <li ng-repeat="library in libraries">{{ library.name }}: {{library.message}}</li>
         </ul>
     </script>
+
+    <script id="account.html" type="text/ng-template">
+
+    </script>
+
 
     <!-- General 3rd Party Scripts-->
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
@@ -34,5 +78,5 @@
 
     <!-- My Scripts -->
     <script src='js/app.js'></script>
-</body>
+</div></body>
 </html>
