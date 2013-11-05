@@ -67,7 +67,10 @@
                     <td>{{library.name}}</td>
                     <td>{{library.rating}}</td>
                     <td>{{library.title}}</td>
-                    <td><a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil">Edit</span></a></td>
+                    <td>
+                        <a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}"><span class="glyphicon glyphicon-search">View</span></a> 
+                        <a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil">Edit</span></a>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -113,8 +116,42 @@
                 <p class="help-block">e.g. data types, functions, etc.</p>
             </div>
             <button class="btn btn-primary" type="submit" ng-disabled="libraryForm.$invalid || !user.name || isClean()">Submit</button>
+            <button class="btn btn-danger" type="button" ng-click="destroy()">Delete</button>
             <a class="btn btn-default" href="#/libraries">Cancel</a>
         </form>
+    </script>
+
+    <script id="libraryView.html" type="text/ng-template">
+        <span class="pull-right" ng-show="ownLibrary()">
+            <a class="btn btn-default" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil">Edit</span></a>
+        </span>
+
+        <h2><span ng-bind="library.name"></span> <small><a href="{{library.homepage}}" ng-bind="library.homepage"></a></small></h2>
+        <p class="lead" ng-bind="library.title"></p>
+        <p ng-bind-html-unsafe="library.description"></p>
+
+        <table class="table">
+            <tr>
+                <th>Maintainer</th>
+                <td ng-bind="library.maintainer.name"></td>
+            </tr>
+            <tr>
+                <th>Rating</th>
+                <td ng-bind=""></td>
+            </tr>
+            <tr>
+                <th>URL</th>
+                <td ng-bind="library.url"></td>
+            </tr>
+            <tr>
+                <th>Keywords</th>
+                <td ng-bind="library.keywords"></td>
+            </tr>
+            <tr>
+                <th></th>
+                <td ng-bind=""></td>
+            </tr>
+        </table>
     </script>
 
 

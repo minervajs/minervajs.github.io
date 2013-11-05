@@ -72,6 +72,19 @@
                 };
             });
     });
+
+    app.controller('libraryView', function (angularFire, libraryRoot, $scope, $routeParams, User) {
+        $scope.user = User;
+        angularFire(libraryRoot.child($routeParams.name), $scope, 'library')
+            .then(function () {
+                $scope.ownLibrary = function () {
+                    return angular.equals($scope.library.maintainer, {
+                        "name": $scope.user.username,
+                        "provider": $scope.user.provider,
+                        "email": $scope.user.email
+                    });
+                };
+            });
     });
 
     app.controller('account', function ($scope, fbRoot, angularFireAuth, $templateCache) {
