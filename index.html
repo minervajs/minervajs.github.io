@@ -45,24 +45,76 @@
     </nav>
 
     <!-- Main Content -->
-    <div id="messages"></div>
 
-    <input type='text' id='nameInput' placeholder='Name'>
-    <input type='text' id='messageInput' placeholder='Message'>
-
-    <button id="login" class="btn">Login!</button>
-
-    <div class="row" ng-view></div>
+    <div ng-view></div>
 
     <!-- Templates -->
-    <script id="libraryList.html" type="text/ng-template">
-        <ul>
-            <li ng-repeat="library in libraries">{{ library.name }}: {{library.message}}</li>
-        </ul>
+    <script id="login.html" type="text/ng-template">
+        <h1>You must be logged in to complete that action</h1>
+        <a href="#" ng-click="loginGithub()">Login using Github</a>
     </script>
 
-    <script id="account.html" type="text/ng-template">
+    <script id="libraryList.html" type="text/ng-template">
+        <h1>Libraries</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th> <th>Rating</th> <th>Title</th> <th><a class="btn btn-default btn-xs pull-right" ng-show="user" href="#/libraries/new"><span class="glyphicon glyphicon-plus-sign">Add</span></a></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="library in libraries">
+                    <td>{{library.latest.name}}</td>
+                    <td>{{library.latest.rating}}</td>
+                    <td>{{library.latest.title}}</td>
+                    <td><a class="btn btn-default btn-xs" href="#/libraries/{{library.latest.name}}"><span class="glyphicon glyphicon-pencil">Edit</span></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </script>
 
+    <script id="libraryEdit.html" type="text/ng-template">
+        <form name="libraryForm" role="form" ng-submit="saveLibrary()">
+            <div class="form-group" ng-class="{'has-error': libraryForm.name.$invalid}">
+                <label class="control-label" for="name">Name</label>
+                <input ng-model="library.name" name="name" class="form-control" type="text" placeholder="Name" required>
+                <span ng-show="libraryForm.name.$error.required" class="help-block">Required</span>
+                <span class="help-block">Should not contain spaces</span>
+            </div>
+            <div class="form-group" ng-class="{'has-error': libraryForm.version.$invalid}">
+                <label class="control-label" for="version">Version</label>
+                <input ng-model="library.version" name="version" class="form-control" type="text" placeholder="Version" required>
+                <span ng-show="libraryForm.version.$error.required" class="help-block">Required</span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="title">Title</label>
+                <input ng-model="library.title" name="title" class="form-control" type="text" placeholder="Title">
+                <p class="help-block">Expanded form of the name</p>
+            </div>
+            <div class="form-group" ng-class="{'has-error': libraryForm.url.$invalid}">
+                <label class="control-label" for="url">URL</label>
+                <input ng-model="library.url" name="url" class="form-control" type="text" placeholder="URL" required>
+                <span ng-show="libraryForm.url.$error.required" class="help-block">Required</span>
+                <p class="help-block">URL of the library script</p>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="homepage">Homepage</label>
+                <input ng-model="library.homepage" name="homepage" class="form-control" type="text" placeholder="Homepage">
+                <p class="help-block">The library's homepage</p>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <textarea ng-model="library.description" name="description" class="form-control" rows="5"></textarea>
+                <p class="help-block">You may use HTML here</p>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="keywords">Keywords, keywords</label>
+                <input ng-model="library.keywords" name="keywords" class="form-control" type="text" placeholder="Keywords, keywords">
+                <p class="help-block">e.g. data types, functions, etc.</p>
+            </div>
+            <button class="btn btn-primary" type="submit" ng-disabled="libraryForm.$invalid || !user">Submit</button>
+            <a class="btn btn-default" href="#/libraries">Cancel</a>
+        </form>
     </script>
 
 
