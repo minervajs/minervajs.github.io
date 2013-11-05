@@ -59,15 +59,15 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th> <th>Rating</th> <th>Title</th> <th><a class="btn btn-default btn-xs pull-right" ng-show="user" href="#/libraries/new"><span class="glyphicon glyphicon-plus-sign">Add</span></a></th>
+                    <th>Name</th> <th>Rating</th> <th>Title</th> <th><a class="btn btn-default btn-xs pull-right" ng-show="user.name" href="#/libraries/new"><span class="glyphicon glyphicon-plus-sign">Add</span></a></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="library in libraries">
-                    <td>{{library.latest.name}}</td>
-                    <td>{{library.latest.rating}}</td>
-                    <td>{{library.latest.title}}</td>
-                    <td><a class="btn btn-default btn-xs" href="#/libraries/{{library.latest.name}}"><span class="glyphicon glyphicon-pencil">Edit</span></a></td>
+                    <td>{{library.name}}</td>
+                    <td>{{library.rating}}</td>
+                    <td>{{library.title}}</td>
+                    <td><a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil">Edit</span></a></td>
                 </tr>
             </tbody>
         </table>
@@ -112,7 +112,7 @@
                 <input ng-model="library.keywords" name="keywords" class="form-control" type="text" placeholder="Keywords, keywords">
                 <p class="help-block">e.g. data types, functions, etc.</p>
             </div>
-            <button class="btn btn-primary" type="submit" ng-disabled="libraryForm.$invalid || !user">Submit</button>
+            <button class="btn btn-primary" type="submit" ng-disabled="libraryForm.$invalid || !user.name || isClean()">Submit</button>
             <a class="btn btn-default" href="#/libraries">Cancel</a>
         </form>
     </script>

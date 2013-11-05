@@ -9,54 +9,69 @@
         return new Firebase(fbURL);
     });
 
-    app.factory('libraries', function (angularFireCollection, fbRoot) {
-        var libraryRef, libraryCollection;
-        libraryRef = fbRoot.child('libraries');
-        libraryCollection = angularFireCollection(libraryRef);
+    app.factory('libraryRoot', function (fbRoot) {
+        return fbRoot.child('libraries');
+    });
+
+    app.factory('Libraries', function (angularFireCollection, libraryRoot) {
+        var libraryCollection;
+        libraryCollection = angularFireCollection(libraryRoot);
         libraryCollection.addLibrary = function (library, cb) {
-            var ref = libraryRef;
             if (!cb) {
-                ref.child(library.name).child('latest').set(library);
+                libraryRoot.child(library.name).set(library);
             } else {
-                ref.child(library.name).child('latest').set(library, cb);
+                libraryRoot.child(library.name).set(library, cb);
             }
         };
         return libraryCollection;
     });
 
-    app.controller('libraryList', function (libraries, $scope) {
-        $scope.user = {};
-        $scope.$on("angularFireAuth:login", function(evt, user) {
-            $scope.user = user;
+    app.factory('User', function ($rootScope) {
+        var User = {};
+        $rootScope.$on("angularFireAuth:login", function(evt, user) {
+            angular.copy(user, User);
         });
-        $scope.$on("angularFireAuth:logout", function(evt, user) {
-            $scope.user = null;
+        $rootScope.$on("angularFireAuth:logout", function(evt, user) {
+            angular.copy({}, User);
         });
-        $scope.libraries = libraries;
+        return User;
     });
 
-    app.controller('libraryNew', function (libraries, $scope, $location) {
-        $scope.user = {};
-        $scope.$on("angularFireAuth:login", function(evt, user) {
-            $scope.user = user;
-        });
-        $scope.$on("angularFireAuth:logout", function(evt, user) {
-            $scope.user = null;
-        });
+    app.controller('libraryList', function (Libraries, User, $scope) {
+        $scope.user = User;
+        $scope.libraries = Libraries;
+    });
+
+    app.controller('libraryNew', function (Libraries, User, $scope, $location, $timeout) {
+        $scope.user = User;
         $scope.saveLibrary = function () {
             $scope.library.maintainer = {
                 "name": $scope.user.username,
                 "provider": $scope.user.provider,
                 "email": $scope.user.email
             }
-            libraries.addLibrary($scope.library);
-            $location.path('/libraries');
+            Libraries.addLibrary($scope.library, function() {
+                $timeout(function() { $location.path('/'); });
+            });
         };
     });
 
-    app.controller('libraryEdit', function (angularFire, fbRoot, $scope, $routeParams) {
-        var ref = fbRoot.child('libraries').child($routeParams.name).child('latest');
-        angularFire(ref, $scope, 'library');
+    app.controller('libraryEdit', function (angularFire, libraryRoot, $scope, $routeParams, $location, User) {
+        $scope.user = User;
+        angularFire(libraryRoot.child($routeParams.name), $scope, 'remote')
+            .then(function () {
+                $scope.library = angular.copy($scope.remote);
+                $scope.isClean = function () { return angular.equals($scope.remote, $scope.library) };
+                $scope.destroy = function () {
+                    $scope.remote = null;
+                    $location.path('/');
+                };
+                $scope.saveLibrary = function () {
+                    $scope.remote = angular.copy($scope.library);
+                    $location.path('/');
+                };
+            });
+    });
     });
 
     app.controller('account', function ($scope, fbRoot, angularFireAuth, $templateCache) {
@@ -74,7 +89,8 @@
             .when("/login", { controller: 'account', templateUrl: 'login.html' })
             .when("/libraries", { controller: 'libraryList', templateUrl: 'libraryList.html'})
             .when("/libraries/new", { controller: 'libraryNew', templateUrl: 'libraryEdit.html'})
-            .when("/libraries/:name", { controller: 'libraryEdit', templateUrl: 'libraryEdit.html'})
+            .when("/libraries/:name/edit", { controller: 'libraryEdit', templateUrl: 'libraryEdit.html'})
+            .when("/libraries/:name", { controller: 'libraryView', templateUrl: 'libraryView.html'})
             .otherwise({ redirectTo: "/libraries"});
     });
 })();
