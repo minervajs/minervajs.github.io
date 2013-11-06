@@ -92,6 +92,9 @@
         $scope.loginGithub = function () {
             angularFireAuth.login('github');
         };
+        $scope.loginFacebook = function () {
+            angularFireAuth.login('facebook');
+        };
         $scope.logout = function () {
             angularFireAuth.logout();
         };
