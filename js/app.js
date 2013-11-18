@@ -3,16 +3,16 @@
  // Initial App Declaration
     var app = angular.module('minerva', ['firebase', 'ngRoute']);
 
+ // Firebase References and URLs
     app.value('fbURL', 'https://minervajs.firebaseio.com/');
-
     app.factory('fbRoot', function (fbURL) {
         return new Firebase(fbURL);
     });
-
     app.factory('libraryRoot', function (fbRoot) {
         return fbRoot.child('libraries');
     });
 
+ // Library Service
     app.factory('Libraries', function (angularFireCollection, libraryRoot) {
         var libraryCollection;
         libraryCollection = angularFireCollection(libraryRoot);
@@ -26,6 +26,7 @@
         return libraryCollection;
     });
 
+ // User Service
     app.factory('User', function ($rootScope) {
         var User = {};
         $rootScope.$on("angularFireAuth:login", function(evt, user) {
@@ -37,12 +38,11 @@
         return User;
     });
 
+ // Library Controllers
     app.controller('libraryList', function (Libraries, User, $scope) {
         $scope.user = User;
         $scope.libraries = Libraries;
-    });
-
-    app.controller('libraryNew', function (Libraries, User, $scope, $location, $timeout) {
+    }).controller('libraryNew', function (Libraries, User, $scope, $location, $timeout) {
         $scope.user = User;
         $scope.saveLibrary = function () {
             $scope.library.maintainer = {
@@ -54,9 +54,7 @@
                 $timeout(function() { $location.path('/'); });
             });
         };
-    });
-
-    app.controller('libraryEdit', function (angularFire, libraryRoot, $scope, $routeParams, $location, User) {
+    }).controller('libraryEdit', function (angularFire, libraryRoot, $scope, $routeParams, $location, User) {
         $scope.user = User;
         angularFire(libraryRoot.child($routeParams.name), $scope, 'remote')
             .then(function () {
@@ -71,9 +69,7 @@
                     $location.path('/');
                 };
             });
-    });
-
-    app.controller('libraryView', function (angularFire, libraryRoot, $scope, $routeParams, User) {
+    }).controller('libraryView', function (angularFire, libraryRoot, $scope, $routeParams, User) {
         $scope.user = User;
         angularFire(libraryRoot.child($routeParams.name), $scope, 'library')
             .then(function () {
@@ -87,6 +83,7 @@
             });
     });
 
+ // Account Controller
     app.controller('account', function ($scope, fbRoot, angularFireAuth, $templateCache) {
         angularFireAuth.initialize(fbRoot, {scope: $scope, name: "user", path: "/login"});
         $scope.loginGithub = function () {
@@ -100,6 +97,7 @@
         };
     });
 
+ // App Configuration
     app.config( function ($routeProvider) {
         $routeProvider
             .when("/login", { controller: 'account', templateUrl: 'login.html' })
