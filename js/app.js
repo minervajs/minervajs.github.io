@@ -1,7 +1,7 @@
 (function () {
 
  // Initial App Declaration
-    var app = angular.module('minerva', ['firebase']);
+    var app = angular.module('minerva', ['firebase', 'ngRoute']);
 
     app.value('fbURL', 'https://minervajs.firebaseio.com/');
 
