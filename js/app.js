@@ -11,6 +11,9 @@
     app.factory('libraryRoot', function (fbRoot) {
         return fbRoot.child('libraries');
     });
+    app.factory('ratingRoot', function (fbRoot) {
+        return fbRoot.child('ratings');
+    });
 
  // Library Service
     app.factory('Libraries', function (angularFireCollection, libraryRoot) {
@@ -81,6 +84,26 @@
                     });
                 };
             });
+    }).controller('libraryRating', function (angularFire, ratingRoot, libraryRoot, $scope, $routeParams, User) {
+        $scope.user = User;
+        $scope.$watch('user.username', function (name) {
+            if (name) {
+                angularFire(ratingRoot.child($routeParams.name).child(name), $scope, 'rating');
+                $scope.ready = true;
+            }
+        });
+
+        angularFire(ratingRoot.child($routeParams.name), $scope, 'ratings');
+        angularFire(libraryRoot.child($routeParams.name), $scope, 'library');
+
+        $scope.rate = function () {
+            var sum = 0, count = 0;
+            angular.forEach($scope.ratings, function (rating) {
+                count++;
+                sum += parseInt(rating, 10);
+            });
+            $scope.library.averageRating = sum/count;
+        };
     });
 
  // Account Controller
@@ -97,6 +120,21 @@
         };
     });
 
+ // Directives
+    app.directive('rating', function () {
+        return {
+            restrict: 'E',
+            //replace: true,
+            templateUrl: "rating.html",
+            link: function ($scope, element, attributes) {
+                attributes.$observe("value", function (rating) {
+                    var intRating = parseInt(rating, 10);
+                    $("span", element).slice(0,intRating).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+                });
+            }
+        };
+    });
+
  // App Configuration
     app.config( function ($routeProvider) {
         $routeProvider
@@ -105,6 +143,7 @@
             .when("/libraries/new", { controller: 'libraryNew', templateUrl: 'libraryEdit.html'})
             .when("/libraries/:name/edit", { controller: 'libraryEdit', templateUrl: 'libraryEdit.html'})
             .when("/libraries/:name", { controller: 'libraryView', templateUrl: 'libraryView.html'})
+            .when("/libraries/:name/rate", { controller: 'libraryRating', templateUrl: 'libraryRating.html'})
             .otherwise({ redirectTo: "/libraries"});
     });
 })();

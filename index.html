@@ -65,12 +65,12 @@
             </thead>
             <tbody>
                 <tr ng-repeat="library in libraries">
-                    <td>{{library.name}}</td>
-                    <td>{{library.rating}}</td>
+                    <td><a href="#/libraries/{{library.name}}">{{library.name}}</a></td>
+                    <td><a href="#/libraries/{{library.name}}/rate"><rating value="{{library.averageRating}}"></rating></a></td>
                     <td>{{library.title}}</td>
                     <td>
-                        <a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}"><span class="glyphicon glyphicon-search">View</span></a> 
-                        <a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil">Edit</span></a>
+                        <a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}"><span class="glyphicon glyphicon-search"> View</span></a>
+                        <a class="btn btn-default btn-xs" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil"> Edit</span></a>
                     </td>
                 </tr>
             </tbody>
@@ -124,7 +124,7 @@
 
     <script id="libraryView.html" type="text/ng-template">
         <span class="pull-right" ng-show="ownLibrary()">
-            <a class="btn btn-default" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil">Edit</span></a>
+            <a class="btn btn-default" href="#/libraries/{{library.name}}/edit"><span class="glyphicon glyphicon-pencil"> Edit</span></a>
         </span>
 
         <h2><span ng-bind="library.name"></span> <small><a href="{{library.homepage}}" ng-bind="library.homepage"></a></small></h2>
@@ -138,7 +138,7 @@
             </tr>
             <tr>
                 <th>Rating</th>
-                <td ng-bind=""></td>
+                <td><a href="#/libraries/{{library.name}}/rate"><rating value="{{library.averageRating}}"></rating></a></td>
             </tr>
             <tr>
                 <th>URL</th>
@@ -153,6 +153,21 @@
                 <td ng-bind=""></td>
             </tr>
         </table>
+    </script>
+
+    <script id="rating.html" type="text/ng-template">
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+    </script>
+
+    <script id="libraryRating.html" type="text/ng-template">
+        <div class="input-group">
+            <span class="input-group-btn"><button class="btn btn-default" role="button" ng-click="rate()">Rate</button></span>
+            <input class="form-control" type="text" ng-model="rating">
+        </div>
     </script>
 
 
